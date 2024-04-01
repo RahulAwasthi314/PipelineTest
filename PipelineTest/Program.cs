@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PipelineTest.Data.Context;
 using PipelineTest.Controllers;
+using Microsoft.AspNetCore.Hosting;
+using PipelineTest.MappingProfiles;
+using PipelineTest.Repository.IRepository;
+using PipelineTest.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +13,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<TodoContext>(
     options => options.UseSqlServer(connectionString));
+
+builder.Services.AddAutoMapper(typeof(TodoProfile));
+
+builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
