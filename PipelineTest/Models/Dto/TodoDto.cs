@@ -1,15 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Principal;
-
-namespace PipelineTest.Models
+﻿namespace PipelineTest.Models.Dto
 {
-    public class Todo
+    public class TodoDto
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
         public string Title { get; set; }
-        [Required]
         public string Description { get; set; }
         public bool IsCompleted { get; set; } = false;
     }
