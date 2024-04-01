@@ -1,0 +1,36 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@route= https://localhost:7045/api/Todos
+
+GET {{route}}
+
+###
+
+POST {{route}}
+Content-Type: application/json
+
+{
+  "id": 0,
+  "title": "string",
+  "description": "string",
+  "isCompleted": false
+}
+
+###
+@TodoId = 3
+GET {{route}}/{{TodoId}}
+
+###
+
+PUT {{route}}/{{TodoId}}
+Content-Type: application/json
+
+{
+  "id": {{TodoId}},
+  "title": "string",
+  "description": "string",
+  "isCompleted": false
+}
+
+###
+
+DELETE {{route}}/{{TodoId}}
