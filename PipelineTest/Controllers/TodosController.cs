@@ -27,9 +27,11 @@ namespace PipelineTest.Controllers
 
         // GET: api/Todos
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetTodos()
         {
-            IEnumerable<TodoDto> todos = new List<TodoDto>();
+            IEnumerable<TodoDto>? todos = new List<TodoDto>();
             try
             {
                 todos = await _todoRepository.GetTodos();
@@ -49,7 +51,7 @@ namespace PipelineTest.Controllers
             _responseDto.Result = todos;
             _responseDto.IsSuccessful = true;
 
-            _responseDto.Message = (todos.Count() > 0) 
+            _responseDto.Message = (todos != null && todos.Count() > 0) 
                 ? "Todos fetched successfully." 
                 : "There are no todos to show";
 
@@ -58,6 +60,8 @@ namespace PipelineTest.Controllers
 
         // GET: api/Todos/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetTodo(int id)
         {
             TodoDto? todoDto = new TodoDto();
@@ -94,6 +98,9 @@ namespace PipelineTest.Controllers
         // PUT: api/Todos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PutTodo(int id, TodoDto todoDto)
         {
             TodoDto? todoDtoResult = new TodoDto();
@@ -130,12 +137,20 @@ namespace PipelineTest.Controllers
         // POST: api/Todos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> PostTodo(TodoDto todoDto)
         {
-            TodoDto todoDtoResult = new TodoDto();
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Format invalid!", "Todo is not valid");
+                return BadRequest();
+            }
+            TodoDto? todoDtoResult = new TodoDto();
             try
             {
-                _responseDto.Result = await _todoRepository.PostTodo(todoDto);
+                todoDtoResult = await _todoRepository.PostTodo(todoDto);
             }
             catch (Exception ex)
             {
@@ -165,9 +180,12 @@ namespace PipelineTest.Controllers
 
         // DELETE: api/Todos/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteTodo(int id)
         {
-            TodoDto todoDtoResult = new TodoDto();
+            TodoDto? todoDtoResult = new TodoDto();
             try
             {
                 todoDtoResult = await _todoRepository.DeleteTodo(id);
