@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  pipelinetest:
+    image: pipelinetest
+    build:
+      context: .
+      dockerfile: PipelineTest/Dockerfile
+    ports:
+      - 9090:80
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver_2022,1433; Database=TodoDb;User Id=SA;Password=rahulawasthi@123;Encrypt=False"
+      ASPNETCORE_ENVIRONMENT: DEVELOPMENT
+    depends_on:
+      - sqlserver_2022
+
+  sqlserver_2022:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2022-preview-ubuntu-22.04
+    build: 
+      context: .
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: rahulawasthi@123
+      MSSQL_PID: Express
+    ports:
+      - 1433:1433

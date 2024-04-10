@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipelineTest", "PipelineTest\PipelineTest.csproj", "{448B08DB-B87B-4825-8842-2FCA0E4B07D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipelineTest.Tests", "PipelineTest.Tests\PipelineTest.Tests.csproj", "{A0374BFF-A38E-460B-A82B-DD97769EDC6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipelineTest.Tests", "PipelineTest.Tests\PipelineTest.Tests.csproj", "{A0374BFF-A38E-460B-A82B-DD97769EDC6B}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FAE4F567-CCCB-4821-A33C-C1C7A20B1E9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A0374BFF-A38E-460B-A82B-DD97769EDC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0374BFF-A38E-460B-A82B-DD97769EDC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0374BFF-A38E-460B-A82B-DD97769EDC6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAE4F567-CCCB-4821-A33C-C1C7A20B1E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAE4F567-CCCB-4821-A33C-C1C7A20B1E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAE4F567-CCCB-4821-A33C-C1C7A20B1E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAE4F567-CCCB-4821-A33C-C1C7A20B1E9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
