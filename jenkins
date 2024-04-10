@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                 git url: 'https://github.com/rahulawasthi314/pipelinetest.git', branch: 'master'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'dotnet build PipelineTest/PipelineTest.csproj --configuration Release'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'dotnet test PipelineTest.sln'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                // Build your Docker image
+                script {
+                    sh 'docker compose build'
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                script {
+                    // Login to Docker Hub (or your Docker registry)
+                    // Make sure to set your credentials in Jenkins credential store
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker_login') {
+                        // Push your Docker image
+                        docker.image("pipelinetest:${IMAGE_TAG}").push()
+                    }
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                script {
+                    // Stop the currently running container (if any)
+                    sh 'docker rmi -f pipelinetest || true'
+                    // Run the new container
+                    sh "docker run -d --name pipelinetest -p 9000:80 pipelinetest:${IMAGE_TAG}"
+                }
+            }
+        }
+    }
+}
