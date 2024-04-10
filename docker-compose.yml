@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   pipelinetest:
+    container_name: pipelinetest-container
     image: pipelinetest
     build:
       context: .
