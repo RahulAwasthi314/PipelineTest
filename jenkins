@@ -1,15 +1,15 @@
 pipeline {
     agent any
+    def app
 
     environment {
         IMAGE_TAG = 'latest'
+        DOCKER_IMAGE = "awasthir314/pipelinetest"
     }
 
     stages {
         stage('Checkout') {
-            steps {
-                 git url: 'https://github.com/rahulawasthi314/pipelinetest.git', branch: 'master'
-            }
+            checkout scm
         }
 
         stage('Build') {
@@ -25,36 +25,19 @@ pipeline {
         }
 
         stage('Docker Build') {
-            steps {
-                // Build your Docker image
-                script {
-                    sh 'docker compose build'
-                }
+            app = docker.build(${DOCKER_IMAGE}, ". -f ./PipelineTest/Dockerfile").inside("--entrypoint=''") {
+                echo "Building docker image"
             }
         }
 
         stage('Docker Push') {
-            steps {
-                script {
-                    // Login to Docker Hub (or your Docker registry)
-                    // Make sure to set your credentials in Jenkins credential store
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker_login') {
-                        // Push your Docker image
-                        docker.image("pipelinetest:${IMAGE_TAG}").push()
-                    }
-                }
+            docker.withRegistry('https://index.docker.io/v1', 'docker_login') {
+                docker.image(${DOCKER_IMAGE}).push()
             }
         }
 
         stage('Run Container') {
-            steps {
-                script {
-                    // Stop the currently running container (if any)
-                    sh 'docker rmi -f pipelinetest || true'
-                    // Run the new container
-                    sh "docker run -d --name pipelinetest -p 9000:80 pipelinetest:${IMAGE_TAG}"
-                }
-            }
+            sh "docker run -d --name pipelinetest -p 9000:80 awasthir314/pipelinetest:latest"
         }
     }
 }
