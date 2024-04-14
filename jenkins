@@ -1,5 +1,4 @@
-pipeline {
-    agent any
+node {
     def app
 
     environment {
@@ -7,37 +6,25 @@ pipeline {
         DOCKER_IMAGE = "awasthir314/pipelinetest"
     }
 
-    stages {
-        stage('Checkout') {
-            checkout scm
-        }
+    stage('Checkout') {
+        /* Cloning the Repository to our Workspace */
+        checkout scm
+    }
 
-        stage('Build') {
-            steps {
-                sh 'dotnet build PipelineTest/PipelineTest.csproj --configuration Release'
-            }
+    stage('Build') {
+        /* This builds the actual image */
+        app = docker.build("awasthir314/pipelinetest", ". -f ./PipelineTest/Dockerfile").inside("--entrypoint=''") {
+            echo 'Building docker image...'
         }
+    }
 
-        stage('Test') {
-            steps {
-                sh 'dotnet test PipelineTest.sln'
-            }
-        }
+   
 
-        stage('Docker Build') {
-            app = docker.build(${DOCKER_IMAGE}, ". -f ./PipelineTest/Dockerfile").inside("--entrypoint=''") {
-                echo "Building docker image"
-            }
-        }
-
-        stage('Docker Push') {
-            docker.withRegistry('https://index.docker.io/v1', 'docker_login') {
-                docker.image(${DOCKER_IMAGE}).push()
-            }
-        }
-
-        stage('Run Container') {
-            sh "docker run -d --name pipelinetest -p 9000:80 awasthir314/pipelinetest:latest"
+    stage('Push image') {
+        docker.withRegistry('https://index.docker.io/v1/', 'docker_login') {
+            def customImage = docker.image("awasthir314/pipelinetests")
+            /* Push the container to the custom Registry */
+            customImage.push()
         }
     }
 }
